@@ -48,9 +48,9 @@ public class CEnvironmentData implements IEnvironmentData {
      * The returned values are represented in a key/value way.<br><br>
      *
      * The structure of the data is:<br>
-     * key1=value1&key2=value2<br><br>
+     * key1=value1&amp;key2=value2<br><br>
      *
-     * The seperator between every key/value pair is & and key/value are sepperated by =.
+     * The seperator between every key/value pair is &amp; and key/value are sepperated by =.
      *
      * @return String containing all defined parameteres in a key/value structure.
      */
