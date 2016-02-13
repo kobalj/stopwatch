@@ -100,4 +100,21 @@ public class CStopWatch implements IStopWatch, IInternalStopWatch {
     public Collection<IMeasurePoint> getMeasurePoints() {
         return Collections.unmodifiableCollection(this.measurePoints);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        boolean first = true;
+        for (IMeasurePoint mp : this.measurePoints) {
+            if (first) {
+                first = false;
+            } else {
+                sb.append(';');
+            }
+            sb.append(mp.getName()).append(':').append(mp.getDuration());
+        }
+        sb.append(']');
+        return sb.toString();
+    }
 }
