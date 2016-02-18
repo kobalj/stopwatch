@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.kobalj.stopwatch;
+package si.kobalj.stopwatch;
 
 import si.kobalj.stopwatch.CStopWatchFactory;
 import si.kobalj.stopwatch.CAccumulatingStopWatch;
 import java.util.Collection;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 import si.kobalj.stopwatch.model.IInternalStopWatch;
 import si.kobalj.stopwatch.model.IMeasurePoint;
 import si.kobalj.stopwatch.model.IStopWatch;
@@ -145,4 +146,35 @@ public class CAccumulatingStopWatchTest {
         IMeasurePoint mp = points.iterator().next();
         assertTrue("Invalid max duration time status.", mp.isSLAViolation());
     }
+    
+    /**
+     * Test of start method, of class CStopWatch. Test of toString method.
+     *
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    @Ignore
+    public void testIStopWatch2String() throws InterruptedException {
+        System.out.println("testIStandardStopWatchWithMeasurePointSLA");
+
+        IStopWatch stopWatch = CStopWatchFactory.getStopWatchBuilder().enable(IStopWatchBuilder.Option.ACCUMULATE_SAME_TAGS).setSLA("MARK1", 50).build();
+
+        stopWatch.start("MARK1");
+        Thread.sleep(100);
+        stopWatch.stop("MARK1");
+
+        stopWatch.start("MARK2");
+        Thread.sleep(20);
+        stopWatch.stop("MARK2");
+        
+        stopWatch.start("MARK2");
+        Thread.sleep(30);
+        stopWatch.stop("MARK2");
+
+        String s = stopWatch.toString();
+        assertTrue("toString didn't contain expected parameter", s.contains("MARK1:100"));
+        assertTrue("toString didn't contain expected parameter", s.contains("MARK2:50"));
+        System.out.println("Result is:"+s);
+    }
 }
+

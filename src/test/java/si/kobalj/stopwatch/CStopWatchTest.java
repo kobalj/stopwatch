@@ -32,93 +32,116 @@ import si.kobalj.stopwatch.model.IStopWatch;
  * @author Jure Kobal
  */
 public class CStopWatchTest {
-    
+
     public CStopWatchTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
 
     /**
-     * Test of start method, of class CStopWatch.
-     * Test for stopwatch implementation
+     * Test of start method, of class CStopWatch. Test for stopwatch implementation
+     *
      * @throws java.lang.InterruptedException
      */
     @Test
     public void testIStopWatch() throws InterruptedException {
         System.out.println("testIStopWatch");
-        
+
         IStopWatch stopWatch = CStopWatchFactory.getStopWatchBuilder().build();
-        
+
         stopWatch.start("MARK1");
-        Thread.sleep(100); 
+        Thread.sleep(100);
         stopWatch.stop("MARK1");
-        
+
         stopWatch.start("MARK2");
-        Thread.sleep(100); 
+        Thread.sleep(100);
         stopWatch.stop("MARK2");
-        
+
         IInternalStopWatch internalStopWatch = (IInternalStopWatch) stopWatch;
         Collection<IMeasurePoint> points = internalStopWatch.getMeasurePoints();
         assertTrue("Number of measure points is not right.", points.size() == 2);
     }
-    
+
     /**
-     * Test of start method, of class CStopWatch.
-     * Test for stopwatch with global SLA.
+     * Test of start method, of class CStopWatch. Test for stopwatch with global SLA.
+     *
      * @throws java.lang.InterruptedException
      */
     @Test
     public void testIStopWatchWithGlobalSLA() throws InterruptedException {
         System.out.println("testIStandardStopWatchWithGlobalSLA");
-        
+
         IStopWatch stopWatch = CStopWatchFactory.getStopWatchBuilder().setGlobalSLA(50).build();
-        
+
         stopWatch.startGlobal();
-        Thread.sleep(100); 
+        Thread.sleep(100);
         stopWatch.stopGlobal();
-        
+
         IInternalStopWatch internalStopWatch = (IInternalStopWatch) stopWatch;
         Collection<IMeasurePoint> points = internalStopWatch.getMeasurePoints();
         assertTrue("Number of measure points is not right.", points.size() == 1);
-        
+
         IMeasurePoint mp = points.iterator().next();
         assertTrue("Invalid max duration time status.", mp.isSLAViolation());
     }
-    
+
     /**
-     * Test of start method, of class CStopWatch.
-     * Test for stopwatch with SLA for measurepoint.
+     * Test of start method, of class CStopWatch. Test for stopwatch with SLA for measurepoint.
+     *
      * @throws java.lang.InterruptedException
      */
     @Test
     public void testIStopWatchWithMeasurePointSLA() throws InterruptedException {
         System.out.println("testIStandardStopWatchWithMeasurePointSLA");
-        
+
         IStopWatch stopWatch = CStopWatchFactory.getStopWatchBuilder().setSLA("MARK1", 50).build();
-        
+
         stopWatch.start("MARK1");
-        Thread.sleep(100); 
+        Thread.sleep(100);
         stopWatch.stop("MARK1");
-        
+
         IInternalStopWatch internalStopWatch = (IInternalStopWatch) stopWatch;
         Collection<IMeasurePoint> points = internalStopWatch.getMeasurePoints();
         assertTrue("Number of measure points is not right.", points.size() == 1);
-        
+
         IMeasurePoint mp = points.iterator().next();
         assertTrue("Invalid max duration time status.", mp.isSLAViolation());
+    }
+
+    /**
+     * Test of start method, of class CStopWatch. Test of toString method.
+     *
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    public void testIStopWatch2String() throws InterruptedException {
+        System.out.println("testIStandardStopWatchWithMeasurePointSLA");
+
+        IStopWatch stopWatch = CStopWatchFactory.getStopWatchBuilder().setSLA("MARK1", 50).build();
+
+        stopWatch.start("MARK1");
+        Thread.sleep(100);
+        stopWatch.stop("MARK1");
+
+        stopWatch.start("MARK2");
+        Thread.sleep(20);
+        stopWatch.stop("MARK2");
+
+        String s = stopWatch.toString();
+        assertEquals("Result of toString not as expected.", s, "[MARK1:100;MARK2:20]");
     }
 }

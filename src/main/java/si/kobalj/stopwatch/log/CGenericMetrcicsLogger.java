@@ -90,11 +90,12 @@ public class CGenericMetrcicsLogger {
             level = Level.WARNING;
         }
 
-        if (hasData) {
+        if (hasData
+                || (hasSLAViolations && logSLAViolationsOnly && hasData)) {
             LOGGER.log(level, sb.toString());
         }
     }
-
+    
     public static class CGenericMetrcicsLoggerBuilder {
 
         public boolean logSLAViolationsOnly = false;

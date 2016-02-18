@@ -4,7 +4,7 @@ Simple and lightweight java performance measuring (stopwatch) library.
 It works with taking measure points (like a real stopwatch) implemented in the executed code and then calculating the duration and in case of defined SLA (max execution time) even detecting bottlenecks.
 
 [![Build Status](https://travis-ci.org/kobalj/stopwatch.svg?branch=master)](https://travis-ci.org/kobalj/stopwatch)
-[![Build Status](https://img.shields.io/badge/license-GPLv3-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](LICENSE)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/si.kobalj.utilities/stopwatch/badge.svg)](https://maven-badges.herokuapp.com/maven-central/si.kobalj.utilities/stopwatch)
 
 ## Code Example

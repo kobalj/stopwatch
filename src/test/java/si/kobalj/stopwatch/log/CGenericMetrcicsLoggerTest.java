@@ -92,7 +92,11 @@ public class CGenericMetrcicsLoggerTest {
         // WE stop the global stopwatch
         pStopWatch.stopGlobal();
 
-        logger.log(pStopWatch);
+        CEnvironmentData envData = new CEnvironmentData();
+        envData.addData("id", "U1212");
+        envData.addData("val", 123);
+        
+        logger.log(pStopWatch, envData);
 
         assertTrue(true);
     }
