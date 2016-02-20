@@ -1,2 +1,6 @@
+1.0.1 (2016-02-20)
+- Added toString in CStopWatch class
+- Introduced CLogMessage in CGenericMetrcicsLogger
+
 1.0.0 (2016-02-11)
 - Initial releas of the stopwatch library.
