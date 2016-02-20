@@ -16,6 +16,7 @@
  */
 package si.kobalj.stopwatch.log;
 
+import java.util.logging.Level;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -49,20 +50,19 @@ public class CGenericMetrcicsLoggerTest {
     @After
     public void tearDown() {
     }
-
+    
     /**
      * Sample implementation of the stopwatch system.
-     *
+     * Test with no SLA violation and global and one specific measure point. Without environment data.
+     * 
      * @throws java.lang.Exception
      */
     @Test
-    public void testLogCase() throws Exception {
-        System.out.println("testLogCase");
-
+    public void testMessage() throws Exception {
+        System.out.println("testMessage");
+        
         CGenericMetrcicsLogger logger = new CGenericMetrcicsLogger.CGenericMetrcicsLoggerBuilder().build();
-        IStopWatch pStopWatch = CStopWatchFactory.getStopWatchBuilder().setGlobalSLA(10000).build();
-
-        // We start the global stop watch
+        IStopWatch pStopWatch = CStopWatchFactory.getStopWatchBuilder().build();
         pStopWatch.startGlobal();
 
         // System is "doing" some work
@@ -75,29 +75,85 @@ public class CGenericMetrcicsLoggerTest {
 
         pStopWatch.stop("GET_ACC");
 
-        // Measure point with sub measure point
-        pStopWatch.start("CALC_CHRG");
-        // System is "doing" some work
-        Thread.sleep(200);
-
-        // Sub measure point
-        pStopWatch.start("GET_CHRG");
-        // System is "doing" some work
-        Thread.sleep(150);
-
-        pStopWatch.stop("GET_CHRG");
-
-        pStopWatch.stop("CALC_CHRG");
-
-        // WE stop the global stopwatch
+        // We stop the global stopwatch
         pStopWatch.stopGlobal();
-
-        CEnvironmentData envData = new CEnvironmentData();
-        envData.addData("id", "U1212");
-        envData.addData("val", 123);
         
-        logger.log(pStopWatch, envData);
+        ILogMessage message = logger.getMessage(pStopWatch, null);
+        assertEquals("Level is not as expected.", message.getLevel(), Level.INFO);
+        assertTrue(message.getMessage().contains("PERF_LOG:"));
+        assertTrue(message.getMessage().contains("GET_ACC"));
+        assertFalse(message.getMessage().contains("|| ENV_DATA: NODATA"));
+    }
+    
+    /**
+     * Sample implementation of the stopwatch system.
+     * Test with no SLA violation and global and one specific measure point. Without environment data.
+     * 
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testMessageSLAViolation() throws Exception {
+        System.out.println("testMessageSLAViolation");
+        
+        CGenericMetrcicsLogger logger = new CGenericMetrcicsLogger.CGenericMetrcicsLoggerBuilder().
+                setLogSLAViolationsAsWarning(true).build();
+        IStopWatch pStopWatch = CStopWatchFactory.getStopWatchBuilder().setGlobalSLA(10).build();
+        pStopWatch.startGlobal();
 
-        assertTrue(true);
+        // System is "doing" some work
+        Thread.sleep(100);
+
+        // Simple measure point
+        pStopWatch.start("GET_ACC");
+        // System is "doing" some work
+        Thread.sleep(100);
+
+        pStopWatch.stop("GET_ACC");
+
+        // We stop the global stopwatch
+        pStopWatch.stopGlobal();
+        
+        ILogMessage message = logger.getMessage(pStopWatch, null);
+        assertEquals("Level is not as expected.", message.getLevel(), Level.WARNING);
+        assertTrue(message.getMessage().contains("PERF_LOG:"));
+        assertTrue(message.getMessage().contains("GET_ACC"));
+        assertFalse(message.getMessage().contains("|| ENV_DATA: NODATA"));
+    }
+    
+    /**
+     * Sample implementation of the stopwatch system.
+     * Test with no SLA violation and global and one specific measure point. With environment data.
+     * 
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testMessageSLAViolationEnvData() throws Exception {
+        System.out.println("testMessageSLAViolationEnvData");
+        
+        CGenericMetrcicsLogger logger = new CGenericMetrcicsLogger.CGenericMetrcicsLoggerBuilder().
+                setLogSLAViolationsAsWarning(true).build();
+        IStopWatch pStopWatch = CStopWatchFactory.getStopWatchBuilder().setGlobalSLA(10).build();
+        pStopWatch.startGlobal();
+
+        // System is "doing" some work
+        Thread.sleep(100);
+
+        // Simple measure point
+        pStopWatch.start("GET_ACC");
+        // System is "doing" some work
+        Thread.sleep(100);
+
+        pStopWatch.stop("GET_ACC");
+
+        // We stop the global stopwatch
+        pStopWatch.stopGlobal();
+        
+        CEnvironmentData envData = new CEnvironmentData();
+        
+        ILogMessage message = logger.getMessage(pStopWatch, envData);
+        assertEquals("Level is not as expected.", message.getLevel(), Level.WARNING);
+        assertTrue(message.getMessage().contains("PERF_LOG:"));
+        assertTrue(message.getMessage().contains("GET_ACC"));
+        assertTrue(message.getMessage().contains("|| ENV_DATA: NODATA"));
     }
 }

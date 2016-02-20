@@ -54,9 +54,17 @@ public class CGenericMetrcicsLogger {
      * (IEnvironmentData) that contains the parameters used in the execution process the stopwatch is being used in.
      *
      * @param pStopWatch Stopwatch with every stored measure point
-     * @param pExecutionData Environment data used in execution process
+     * @param pEnvironmentData Environment data used in execution process
      */
-    public void log(IStopWatch pStopWatch, IEnvironmentData pExecutionData) {
+    public void log(IStopWatch pStopWatch, IEnvironmentData pEnvironmentData) {
+        ILogMessage message = getMessage(pStopWatch, pEnvironmentData);
+
+        if (message != null) {
+            LOGGER.log(message.getLevel(), message.getMessage());
+        }
+    }
+
+    public ILogMessage getMessage(IStopWatch pStopWatch, IEnvironmentData pEnvironmentData) {
         boolean hasData = false;
         boolean hasSLAViolations = false;
 
@@ -80,9 +88,9 @@ public class CGenericMetrcicsLogger {
             sb.append(mp.getName()).append("=").append(mp.getDuration()).append("ms");
         }
 
-        if (pExecutionData != null) {
-            sb.append("|| ENV_DATA: ");
-            sb.append(pExecutionData.getDataAsString());
+        if (pEnvironmentData != null) {
+            sb.append(" || ENV_DATA: ");
+            sb.append(pEnvironmentData.getDataAsString());
         }
 
         Level level = Level.INFO;
@@ -90,22 +98,26 @@ public class CGenericMetrcicsLogger {
             level = Level.WARNING;
         }
 
+        ILogMessage message = null;
         if (hasData
                 || (hasSLAViolations && logSLAViolationsOnly && hasData)) {
-            LOGGER.log(level, sb.toString());
+            message = new CLogMessage(level, sb.toString());
         }
+
+        return message;
     }
-    
+
     public static class CGenericMetrcicsLoggerBuilder {
 
-        public boolean logSLAViolationsOnly = false;
-        public boolean logSLAViolationsAsWarning = false;
+        private boolean logSLAViolationsOnly = false;
+        private boolean logSLAViolationsAsWarning = false;
 
         /**
-         * Method to define if we want to store only stopwatches that contain at least one measure point with SLA 
+         * Method to define if we want to store only stopwatches that contain at least one measure point with SLA
          * violation.
-         * @param pLogSLAViolationsOnly true if only stopwatches that have measure points with SLA violations should 
-         * be stored, else false
+         *
+         * @param pLogSLAViolationsOnly true if only stopwatches that have measure points with SLA violations should be
+         * stored, else false
          * @return This object
          */
         public CGenericMetrcicsLoggerBuilder setLogSLAViolationsOnly(boolean pLogSLAViolationsOnly) {
@@ -116,6 +128,7 @@ public class CGenericMetrcicsLogger {
         /**
          * Method to define if we want to log stopwatches that contain at least one measure point with SLA violation as
          * WARRNING and not INFO logging level.
+         *
          * @param pLogSLAViolationsAsWarning true if we want to store SLA violations as WARRNING, else false
          * @return This object
          */
@@ -126,6 +139,7 @@ public class CGenericMetrcicsLogger {
 
         /**
          * Building the logger class.
+         *
          * @return Generated CGenericMetrcicsLogger
          */
         public CGenericMetrcicsLogger build() {

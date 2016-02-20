@@ -153,7 +153,6 @@ public class CAccumulatingStopWatchTest {
      * @throws java.lang.InterruptedException
      */
     @Test
-    @Ignore
     public void testIStopWatch2String() throws InterruptedException {
         System.out.println("testIStandardStopWatchWithMeasurePointSLA");
 
@@ -172,9 +171,8 @@ public class CAccumulatingStopWatchTest {
         stopWatch.stop("MARK2");
 
         String s = stopWatch.toString();
-        assertTrue("toString didn't contain expected parameter", s.contains("MARK1:100"));
-        assertTrue("toString didn't contain expected parameter", s.contains("MARK2:50"));
-        System.out.println("Result is:"+s);
+        assertTrue("toString didn't contain expected parameter", s.contains("MARK1:"));
+        assertTrue("toString didn't contain expected parameter", s.contains("MARK2:"));
     }
 }
 
