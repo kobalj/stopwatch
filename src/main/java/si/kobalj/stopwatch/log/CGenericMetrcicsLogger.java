@@ -16,6 +16,7 @@
  */
 package si.kobalj.stopwatch.log;
 
+import si.kobalj.stopwatch.model.ILogMessage;
 import java.util.Collection;
 import java.util.logging.Level;
 import si.kobalj.stopwatch.model.IInternalStopWatch;

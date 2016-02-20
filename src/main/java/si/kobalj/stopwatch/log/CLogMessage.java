@@ -16,10 +16,11 @@
  */
 package si.kobalj.stopwatch.log;
 
+import si.kobalj.stopwatch.model.ILogMessage;
 import java.util.logging.Level;
 
 /**
- *
+ * Implementation of ILogMessage
  * @author Jure Kobal
  */
 public class CLogMessage implements ILogMessage {
@@ -32,11 +33,19 @@ public class CLogMessage implements ILogMessage {
         this.message = message;
     }
 
+    /**
+     * Returns the logging level of the message.
+     * @return Level
+     */
     @Override
     public Level getLevel() {
         return this.level;
     }
 
+    /**
+     * Return the generated messge for logging.
+     * @return Message containing metrics and environment data.
+     */
     @Override
     public String getMessage() {
         return this.message;
