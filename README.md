@@ -15,7 +15,7 @@ As first, get the library from maven central:
 <dependency>
     <groupId>si.kobalj.utilities</groupId>
     <artifactId>stopwatch</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
